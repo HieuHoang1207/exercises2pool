@@ -14,24 +14,34 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DatabaseService = void 0;
 const common_1 = require("@nestjs/common");
-const common_2 = require("@nestjs/common");
 let DatabaseService = class DatabaseService {
     constructor(pool) {
         this.pool = pool;
     }
     async getUsers(offset, limit) {
-        const [rows] = await this.pool.query('SELECT * FROM users LIMIT ? OFFSET ?', [limit, offset]);
-        return rows;
+        try {
+            const query = `SELECT * FROM users LIMIT ${limit} OFFSET ${offset}`;
+            const [rows] = await this.pool.query(query);
+            return rows;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Error fetching users from the database.');
+        }
     }
     async getMeetings() {
-        const [rows] = await this.pool.query('SELECT * FROM meetings');
-        return rows;
+        try {
+            const [rows] = await this.pool.query('SELECT * FROM meetings');
+            return rows;
+        }
+        catch (error) {
+            throw new common_1.InternalServerErrorException('Error fetching meetings from the database.');
+        }
     }
 };
 exports.DatabaseService = DatabaseService;
 exports.DatabaseService = DatabaseService = __decorate([
     (0, common_1.Injectable)(),
-    __param(0, (0, common_2.Inject)('DATABASE_POOL')),
+    __param(0, (0, common_1.Inject)('DATABASE_POOL')),
     __metadata("design:paramtypes", [Object])
 ], DatabaseService);
 //# sourceMappingURL=database.service.js.map

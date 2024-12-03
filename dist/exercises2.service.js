@@ -18,6 +18,9 @@ let Exercises2Service = class Exercises2Service {
     }
     async getWorkingDays(offset = 0, limit = 10) {
         const users = await this.databaseService.getUsers(offset, limit);
+        if (users.length === 0) {
+            throw new common_1.NotFoundException('No more users available.');
+        }
         const meetings = await this.databaseService.getMeetings();
         return users.map((user) => {
             const userMeetings = meetings.filter((meeting) => meeting.user_id === user.id);

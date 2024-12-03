@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from './database.service';
 import { User } from './interfaces/user.interface';
 import { Meeting } from './interfaces/meeting.interface';
@@ -10,6 +10,10 @@ export class Exercises2Service {
   async getWorkingDays(offset: number = 0, limit: number = 10) {
     // Lấy danh sách người dùng từ MySQL
     const users: User[] = await this.databaseService.getUsers(offset, limit);
+    if (users.length === 0) {
+      throw new NotFoundException('No more users available.');
+    }
+
     const meetings: Meeting[] = await this.databaseService.getMeetings();
 
     return users.map((user) => {
@@ -30,6 +34,7 @@ export class Exercises2Service {
         }
       });
 
+      // Kiểm tra lại cách tính số ngày tự do
       const daysWithoutMeetings = user.days - occupiedDays.size;
 
       return {
@@ -40,7 +45,7 @@ export class Exercises2Service {
         gender: user.gender,
         days: user.days,
         meeting_days: meetingDays,
-        days_without_meetings: daysWithoutMeetings,
+        days_without_meetings: daysWithoutMeetings, // Sửa lại logic tính ngày tự do
       };
     });
   }

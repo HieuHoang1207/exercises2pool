@@ -15,12 +15,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Exercises2Controller = void 0;
 const common_1 = require("@nestjs/common");
 const exercises2_service_1 = require("./exercises2.service");
+const common_2 = require("@nestjs/common");
 let Exercises2Controller = class Exercises2Controller {
     constructor(exercises2Service) {
         this.exercises2Service = exercises2Service;
     }
     async getWorkingDays(offset = 0, limit = 10) {
-        return this.exercises2Service.getWorkingDays(offset, limit);
+        try {
+            return await this.exercises2Service.getWorkingDays(offset, limit);
+        }
+        catch (error) {
+            if (error instanceof common_2.NotFoundException) {
+                throw error;
+            }
+            throw new common_2.InternalServerErrorException('An unexpected error occurred.');
+        }
     }
 };
 exports.Exercises2Controller = Exercises2Controller;
