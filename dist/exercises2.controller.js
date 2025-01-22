@@ -22,7 +22,11 @@ let Exercises2Controller = class Exercises2Controller {
     }
     async getWorkingDays(offset = 0, limit = 10) {
         try {
-            return await this.exercises2Service.getWorkingDays(offset, limit);
+            const workingDays = await this.exercises2Service.getWorkingDays(offset, limit);
+            return {
+                message: 'Calculate meeting_days and days_without_meetings with offset and limit',
+                workingDays,
+            };
         }
         catch (error) {
             if (error instanceof common_2.NotFoundException) {
@@ -34,7 +38,7 @@ let Exercises2Controller = class Exercises2Controller {
 };
 exports.Exercises2Controller = Exercises2Controller;
 __decorate([
-    (0, common_1.Get)('users'),
+    (0, common_1.Get)(''),
     __param(0, (0, common_1.Query)('offset')),
     __param(1, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
